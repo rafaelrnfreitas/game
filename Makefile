@@ -1,27 +1,34 @@
 CC := gcc
-TARGET := game
+
 SRC := ./src
 INCLUDE := ./include
 BUILD := ./build
+TARGET := $(BUILD)/game
 
 SRCS := $(shell find $(SRC) -name '*.c')
 OBJS := $(SRCS:%=$(BUILD)/%.o)
 DEPS := $(OBJS:.o=.d)
+
 IDIRS := $(shell find $(INCLUDE) -type d)
 IFLAGS := $(addprefix -I, $(IDIRS))
 
 CPPFLAGS := $(IFLAGS) -MMD -MP
 CFLAGS := -Wall -Wextra -std=c11 -g -O0 -fno-omit-frame-pointer
+LDLIBS := -lm
+
+.PHONY: all clean
+
+all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $@
+	mkdir -p $(dir $@)
+	$(CC) $(OBJS) $(LDLIBS) -o $@
 
 $(BUILD)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-.PHONY: clean
 clean:
-	rm -rf $(BUILD) $(TARGET)
+	rm -rf $(BUILD)
 
 -include $(DEPS)
