@@ -1,6 +1,11 @@
 #include <stdio.h>
+#include "engine.h"
 
 int main() {
-	printf("Hello, world!\n");			
+    engine_t engine;
+    engine_init(&engine);
+    engine_run(&engine);
+    engine_shutdown(&engine);
+
 	return 0;
 }
